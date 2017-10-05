@@ -41,6 +41,27 @@ module.exports = ->
 
     x * x + y * y + z * z
 
+  add3 = (a, b) ->
+    a[0] += b[0]
+    a[1] += b[1]
+    a[2] += b[2]
+
+    return a
+
+  atkinson = (errors, error, index, width) ->
+    r = error[0] >> 3
+    g = error[1] >> 3
+    b = error[2] >> 3
+
+    [1, 2, width - 1, width, width + 1, 2 * width].forEach (n) ->
+      i = n * 4
+      errors[i] += r
+      errors[i + 1] += g
+      errors[i + 2] += b
+
+  diffuseError = (errors, error, index, width) ->
+    atkinson(errors, error, index, width)
+
   closestColor = ([r, g, b], palette, colorStrings) ->
     minDistance = Infinity
     index = null
@@ -52,23 +73,37 @@ module.exports = ->
         minDistance = distance
         index = i
 
-    return colorStrings[index]
+    [rp, gp, bp] = palette[index]
 
-  applyFilter = (imageData, palette, destinationCanvas) ->
+    color: colorStrings[index]
+    error: [rp - r, gp - g, bp - b]
+
+  applyFilter = (imageData, palette, colorStrings, destinationCanvas) ->
     {width, height} = imageData
     context = destinationCanvas.getContext('2d')
+    errors = new Int8Array(imageData.data.length)
 
     x = y = 0
     while y < height
       x = 0
       while x < width
         index = (x + y * width) * 4
-        rgb = imageData.data.slice(index, index + 3)
-        context.fillStyle = closestColor(rgb, palette, colorStrings)
+        rgb = add3 imageData.data.slice(index, index + 3), errors.slice(index, index + 3)
+
+        {color, error} = closestColor(rgb, palette, colorStrings)
+
+        context.fillStyle = color
         context.fillRect(x, y, 1, 1)
+
+        # Difuse error
+        diffuseError(errors, error, index, width)
 
         x += 1
       y += 1
+
+    console.log errors
+
+    return
 
   element: editorElement
   open: (file) ->
@@ -86,5 +121,4 @@ module.exports = ->
       context.drawImage(img, 0, 0, width, height)
 
       data = context.getImageData(0, 0, width, height)
-      applyFilter(data, palette, destinationCanvas)
-      
+      applyFilter(data, palette, colorStrings, destinationCanvas)

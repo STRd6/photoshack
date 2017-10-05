@@ -21,6 +21,18 @@ SystemClient()
       file = files[0]
       editor.open file
 
+  document.addEventListener "paste", (e) ->
+    return if e.defaultPrevented
+
+    {files, items, types} = e.clipboardData
+
+    file = Array::reduce.call items, (file, item) ->
+      file or (item.type.match(/^image\//) and item.getAsFile())
+    , null
+
+    if file
+      editor.open(file)
+
   editor = Editor()
 
   document.body.appendChild editor.element
