@@ -60,11 +60,13 @@ module.exports = ->
 
     x = y = 0
     while y < height
+      x = 0
       while x < width
-        index = x + y * width
+        index = (x + y * width) * 4
         rgb = imageData.data.slice(index, index + 3)
         context.fillStyle = closestColor(rgb, palette, colorStrings)
         context.fillRect(x, y, 1, 1)
+
         x += 1
       y += 1
 
