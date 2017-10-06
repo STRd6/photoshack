@@ -1,3 +1,5 @@
 palette
-  textarea= @source
-  colors
+  textarea(value=@editSource)
+  colors= @colorElements
+  button.edit(click=@edit) Edit Palette
+  button.apply(click=@apply) Apply

@@ -33,6 +33,10 @@ SystemClient()
     if file
       editor.open(file)
 
-  editor = Editor()
+  editor = Editor(system)
 
   document.body.appendChild editor.element
+
+style = document.createElement "style"
+style.innerHTML = require "./style"
+document.head.appendChild style

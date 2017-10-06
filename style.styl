@@ -1,0 +1,27 @@
+body
+  background-color: gray
+
+palette, colors
+  display: block
+
+palette
+  > textarea
+    display: none
+
+  > button.apply
+    display: none
+
+  &.edit
+    > colors
+      display: none
+    > textarea
+      display: block
+    > button.apply
+      display: initial
+    > button.edit
+      display: none
+
+colors > color
+  display: inline-block
+  height: 16px
+  width: 16px

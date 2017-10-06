@@ -1,45 +1,16 @@
-module.exports = ->
+module.exports = (system) ->
   EditorTemplate = require "../templates/editor"
-  PaletteTemplate = require "../templates/palette"
+
+  PaletteView = require "./palette"
+  paletteView = PaletteView(system)
 
   sourceCanvas = document.createElement 'canvas'
   destinationCanvas = document.createElement 'canvas'
-  debugCanvas = document.createElement 'canvas'
-
-  paletteSource = """
-    20 12 28
-    68 36 52
-    48 52 109
-    78 74 78
-    133 76 48
-    52 101 36
-    208 70 72
-    117 113 97
-    89 125 206
-    210 125 44
-    133 149 161
-    109 170 44
-    210 170 153
-    109 194 202
-    218 212 94
-    222 238 214
-  """
 
   editorElement = EditorTemplate
     sourceCanvas: sourceCanvas
     destinationCanvas: destinationCanvas
-    debugCanvas: debugCanvas
-    paletteElement: PaletteTemplate
-      source: paletteSource
-
-  palette = paletteSource.split("\n").map (line) ->
-    line.split(" ").map (value) ->
-      parseInt value, 10
-
-  toRGB = ([r, g, b]) ->
-    "rgb(#{r},#{g},#{b})"
-
-  colorStrings = palette.map toRGB
+    paletteElement: paletteView.element
 
   distance3Squared = (a1, a2, a3, b1, b2, b3) ->
     x = a1 - b1
@@ -143,22 +114,13 @@ module.exports = ->
         x += 1
       y += 1
 
-    console.log errors
-
-    debugCanvas.width = width
-    debugCanvas.height = height
-    debugger
-    errorData = new Uint8ClampedArray(errors)
-    i = 3
-    while i < errorData.length
-      errorData[i] = 255 # Set full alpha
-      i += 4
-    debugCanvas.getContext('2d').putImageData(new ImageData(errorData, width, height), 0, 0)
-
     return
 
   element: editorElement
   open: (file) ->
+    palette = paletteView.palette()
+    colorStrings = paletteView.paletteStrings()
+
     Image.fromBlob(file)
     .then (img) ->
       {width, height} = img

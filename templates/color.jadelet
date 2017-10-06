@@ -1,0 +1,1 @@
+color(style="background-color: #{@color}")
