@@ -3,10 +3,12 @@ module.exports = ->
 
   sourceCanvas = document.createElement 'canvas'
   destinationCanvas = document.createElement 'canvas'
+  debugCanvas = document.createElement 'canvas'
 
   editorElement = EditorTemplate
     sourceCanvas: sourceCanvas
     destinationCanvas: destinationCanvas
+    debugCanvas: debugCanvas
 
   palette = """
     20 12 28
@@ -54,13 +56,32 @@ module.exports = ->
     b = error[2] >> 3
 
     [1, 2, width - 1, width, width + 1, 2 * width].forEach (n) ->
-      i = n * 4
+      i = (index + n) * 4
       errors[i] += r
       errors[i + 1] += g
       errors[i + 2] += b
 
+    return
+
+  floydSteinbergKernel = [7, 3, 5, 1].map (n) -> n / 16
+
+  floydSteinberg = (errors, error, index, width) ->
+    [r, g, b] = error
+
+    k = floydSteinbergKernel
+
+    [1, width - 1, width, width + 1].forEach (n, z) ->
+      i = (index + n) * 4
+
+      c = k[z]
+
+      errors[i] += r * c
+      errors[i + 1] += g * c
+      errors[i + 2] += b * c
+
   diffuseError = (errors, error, index, width) ->
     atkinson(errors, error, index, width)
+    #floydSteinberg(errors, error, index, width)
 
   closestColor = ([r, g, b], palette, colorStrings) ->
     minDistance = Infinity
@@ -102,6 +123,16 @@ module.exports = ->
       y += 1
 
     console.log errors
+    
+    debugCanvas.width = width
+    debugCanvas.height = height
+    debugger
+    errorData = new Uint8ClampedArray(errors)
+    i = 3
+    while i < errorData.length
+      errorData[i] = 255 # Set full alpha
+      i += 4
+    debugCanvas.getContext('2d').putImageData(new ImageData(errorData, width, height), 0, 0)
 
     return
 

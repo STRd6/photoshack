@@ -1,3 +1,4 @@
 editor
   = @sourceCanvas
   = @destinationCanvas
+  = @debugCanvas
