@@ -1,0 +1,3 @@
+palette
+  textarea= @source
+  colors

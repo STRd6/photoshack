@@ -1,16 +1,12 @@
 module.exports = ->
   EditorTemplate = require "../templates/editor"
+  PaletteTemplate = require "../templates/palette"
 
   sourceCanvas = document.createElement 'canvas'
   destinationCanvas = document.createElement 'canvas'
   debugCanvas = document.createElement 'canvas'
 
-  editorElement = EditorTemplate
-    sourceCanvas: sourceCanvas
-    destinationCanvas: destinationCanvas
-    debugCanvas: debugCanvas
-
-  palette = """
+  paletteSource = """
     20 12 28
     68 36 52
     48 52 109
@@ -27,7 +23,16 @@ module.exports = ->
     109 194 202
     218 212 94
     222 238 214
-  """.split("\n").map (line) ->
+  """
+
+  editorElement = EditorTemplate
+    sourceCanvas: sourceCanvas
+    destinationCanvas: destinationCanvas
+    debugCanvas: debugCanvas
+    paletteElement: PaletteTemplate
+      source: paletteSource
+
+  palette = paletteSource.split("\n").map (line) ->
     line.split(" ").map (value) ->
       parseInt value, 10
 

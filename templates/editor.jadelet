@@ -1,4 +1,4 @@
 editor
   = @sourceCanvas
+  = @paletteElement
   = @destinationCanvas
-  = @debugCanvas
