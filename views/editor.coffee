@@ -101,8 +101,8 @@ module.exports = ->
     return
 
   diffuseError = (errors, error, index, width) ->
-    #atkinson(errors, error, index, width)
-    sierra(errors, error, index, width)
+    atkinson(errors, error, index, width)
+    #sierra(errors, error, index, width)
 
   closestColor = ([r, g, b], palette, colorStrings) ->
     minDistance = Infinity
