@@ -1,7 +1,7 @@
 module.exports = ({Observable}) ->
   ColorTemplate = require "../templates/color"
   PaletteTemplate = require "../templates/palette"
-  
+
   paletteSource = Observable """
     20 12 28
     68 36 52
