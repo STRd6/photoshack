@@ -1,10 +1,8 @@
-require "./lib/extensions"
-
 Drop = require "./lib/drop"
 Editor = require "./views/editor"
 
 SystemClient = require "sys"
-
+SystemClient.applyExtensions()
 SystemClient()
 .then ({system, application}) ->
   {UI, Observable} = system
