@@ -3,37 +3,39 @@ Editor = require "./views/editor"
 
 SystemClient = require "sys"
 SystemClient.applyExtensions()
-SystemClient()
-.then ({system, application}) ->
-  {UI, Observable} = system
-  {Modal} = UI
+{system, application, postmaster} = SystemClient()
 
-  Drop document, (e) ->
-    return if e.defaultPrevented
+editor = Editor(system)
+document.body.appendChild editor.element
 
-    files = e.dataTransfer.files
+{UI, Observable} = system
+{Modal} = UI
 
-    if files.length
-      e.preventDefault()
+Drop document, (e) ->
+  return if e.defaultPrevented
 
-      file = files[0]
-      editor.open file
+  files = e.dataTransfer.files
 
-  document.addEventListener "paste", (e) ->
-    return if e.defaultPrevented
+  if files.length
+    e.preventDefault()
 
-    {files, items, types} = e.clipboardData
+    file = files[0]
+    editor.open file
 
-    file = Array::reduce.call items, (file, item) ->
-      file or (item.type.match(/^image\//) and item.getAsFile())
-    , null
+document.addEventListener "paste", (e) ->
+  return if e.defaultPrevented
 
-    if file
-      editor.open(file)
+  {files, items, types} = e.clipboardData
 
-  editor = Editor(system)
+  file = Array::reduce.call items, (file, item) ->
+    file or (item.type.match(/^image\//) and item.getAsFile())
+  , null
 
-  document.body.appendChild editor.element
+  if file
+    editor.open(file)
+
+system.ready()
+.catch console.warn
 
 style = document.createElement "style"
 style.innerHTML = require "./style"
