@@ -34,6 +34,13 @@ document.addEventListener "paste", (e) ->
   if file
     editor.open(file)
 
+postmaster.delegate =
+  # TODO: Should this be named `open`
+  # TODO: Should the editor be the delegate?
+  # Delegate object choice is app dependent
+  loadFile: (blob, path) ->
+    editor.open(blob)
+
 system.ready()
 .catch console.warn
 
