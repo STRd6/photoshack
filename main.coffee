@@ -41,6 +41,8 @@ postmaster.delegate =
   loadFile: (blob, path) ->
     editor.open(blob)
 
+console.log postmaster.delegate
+
 system.ready()
 .catch console.warn
 
