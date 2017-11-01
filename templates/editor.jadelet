@@ -1,4 +1,5 @@
 editor
+  = @menuBarElement
   = @sourceCanvas
   = @paletteElement
   = @destinationCanvas

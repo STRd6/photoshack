@@ -1,15 +1,17 @@
+require "./lib/extensions"
+
 Drop = require "./lib/drop"
 Editor = require "./views/editor"
 
 SystemClient = require "sys"
 SystemClient.applyExtensions()
-{system, application, postmaster} = SystemClient()
+{system, application, postmaster, UI, Observable} = client = SystemClient()
+{Modal} = UI
 
-editor = Editor(system)
+global.editor = editor = Editor(client)
 document.body.appendChild editor.element
 
-{UI, Observable} = system
-{Modal} = UI
+editor.openFromURL("https://i.imgur.com/OQaYnp7s.jpg")
 
 Drop document, (e) ->
   return if e.defaultPrevented

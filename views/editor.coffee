@@ -1,18 +1,21 @@
 Dithering = require "../dithering"
+Imgur = require "../lib/imgr"
 
-module.exports = (system) ->
+SearchResultsTemplate = require "../templates/search-results"
+
+module.exports = (client) ->
+  {system, UI, Observable} = client
+  {MenuBar, Modal, Progress, Util:{parseMenu}} = UI
+
   EditorTemplate = require "../templates/editor"
 
   PaletteView = require "./palette"
-  paletteView = PaletteView(system)
+  paletteView = PaletteView(client)
+
+  imgur = Imgur "bb9bdf4c3e7140e"
 
   sourceCanvas = document.createElement 'canvas'
   destinationCanvas = document.createElement 'canvas'
-
-  editorElement = EditorTemplate
-    sourceCanvas: sourceCanvas
-    destinationCanvas: destinationCanvas
-    paletteElement: paletteView.element
 
   dithering = Dithering()
   ditherStyle = "atkinson"
@@ -75,23 +78,102 @@ module.exports = (system) ->
 
     return
 
-  element: editorElement
-  open: (file) ->
-    palette = paletteView.palette()
-    colorStrings = paletteView.paletteStrings()
+  showLoader = ->
+    progressView = Progress
+      message: "Loading..."
 
-    Image.fromBlob(file)
-    .then (img) ->
-      {width, height} = img
+    Modal.show progressView.element
 
-      sourceCanvas.width = width
-      sourceCanvas.height = height
+  self =
+    lastOpenURL: Observable ""
+    lastSearchQuery: Observable "cat"
+    openFromURL: (url) ->
+      self.lastOpenURL url
 
-      destinationCanvas.width = width
-      destinationCanvas.height = height
+      showLoader()
 
-      context = sourceCanvas.getContext('2d')
-      context.drawImage(img, 0, 0, width, height)
+      fetch(url)
+      .then (response) -> 
+        response.blob()
+      .then self.open
+      .finally ->
+        Modal.hide()
 
-      data = context.getImageData(0, 0, width, height)
-      applyFilter(data, palette, colorStrings, destinationCanvas)
+    promptOpenURL: ->
+      Modal.prompt "URL", self.lastOpenURL()
+      .then (url) ->
+        if url
+          self.openFromURL url
+    
+    searchImgur: ->
+      Modal.prompt "Query", self.lastSearchQuery()
+      .then (query) ->
+        if query
+          self.lastSearchQuery query
+
+          showLoader()
+
+          imgur.search(query)
+          .then (results) ->
+            Modal.show SearchResultsTemplate results, ({cover, id}) ->
+              self.openFromURL "https://i.imgur.com/#{cover or id}m.jpg"
+
+    open: (file) ->
+      palette = paletteView.palette()
+      colorStrings = paletteView.paletteStrings()
+  
+      Image.fromBlob(file)
+      .then (img) ->
+        {width, height} = img
+  
+        sourceCanvas.width = width
+        sourceCanvas.height = height
+  
+        destinationCanvas.width = width
+        destinationCanvas.height = height
+  
+        context = sourceCanvas.getContext('2d')
+        context.drawImage(img, 0, 0, width, height)
+  
+        data = context.getImageData(0, 0, width, height)
+        applyFilter(data, palette, colorStrings, destinationCanvas)
+
+  menuBar = MenuBar
+    items: parseMenu """
+      [F]ile
+        [N]ew
+        [O]pen
+        Open [U]RL -> promptOpenURL
+        [S]ave
+        Save [A]s
+        -
+        [P]rint
+        -
+        E[x]it
+      [E]dit
+        [U]ndo
+        Redo
+        -
+        Cu[t]
+        [C]opy
+        De[l]ete
+        -
+        Select [A]ll
+        Time/[D]ate
+      Search
+        Imgr -> searchImgur
+      [H]elp
+        [A]bout Notepad
+    """
+    handlers: self
+
+  self.element = EditorTemplate
+    menuBarElement: menuBar.element
+    sourceCanvas: sourceCanvas
+    destinationCanvas: destinationCanvas
+    paletteElement: paletteView.element
+    filterElements: [
+      require("../templates/threshold")()
+    ]
+
+  return self
