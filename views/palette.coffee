@@ -1,8 +1,24 @@
+###
+Shuffles array in place.
+@param {Array} a items An array containing the items.
+###
+shuffle = (a) ->
+  i = a.length - 1
+
+  while i > 0
+    j = Math.floor(Math.random() * (i + 1))
+    x = a[i]
+    a[i] = a[j]
+    a[j] = x
+    i--
+
+  return a
+
 module.exports = ({Observable}) ->
   ColorTemplate = require "../templates/color"
   PaletteTemplate = require "../templates/palette"
 
-  paletteSource = Observable """
+  originalSource = """
     20 12 28
     68 36 52
     48 52 109
@@ -20,6 +36,13 @@ module.exports = ({Observable}) ->
     218 212 94
     222 238 214
   """
+
+  sourceToColors = (source) ->
+    source.split("\n").map (line) ->
+      line.split(" ").map (value) ->
+        parseInt value, 10
+
+  paletteSource = Observable originalSource
 
   editSource = Observable paletteSource()
 
@@ -40,12 +63,19 @@ module.exports = ({Observable}) ->
       self.element.classList.toggle "edit"
 
     palette: ->
-      self.source().split("\n").map (line) ->
-        line.split(" ").map (value) ->
-          parseInt value, 10
+      sourceToColors self.source()
 
     paletteStrings: ->
       self.palette().map toRGB
+
+    random4: ->
+      self.source(
+        shuffle(sourceToColors(originalSource))
+        .slice(0, 4)
+        .map (color) ->
+          color.join(" ")
+        .join("\n")
+      )
 
     colorElements: ->
       self.paletteStrings().map (color) ->

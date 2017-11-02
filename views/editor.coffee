@@ -4,7 +4,7 @@ Imgur = require "../lib/imgr"
 SearchResultsTemplate = require "../templates/search-results"
 
 module.exports = (client) ->
-  {system, UI, Observable} = client
+  {system, UI, Observable, util:{FileIO}} = client
   {MenuBar, Modal, Progress, Util:{parseMenu}} = UI
 
   EditorTemplate = require "../templates/editor"
@@ -82,9 +82,11 @@ module.exports = (client) ->
     progressView = Progress
       message: "Loading..."
 
-    Modal.show progressView.element
+    Modal.show progressView.element,
+      cancellable: false
 
-  self =
+  self = Object.assign FileIO(client),
+    sourceImage: Observable null
     lastOpenURL: Observable ""
     lastSearchQuery: Observable "cat"
     openFromURL: (url) ->
@@ -95,7 +97,7 @@ module.exports = (client) ->
       fetch(url)
       .then (response) -> 
         response.blob()
-      .then self.open
+      .then self.loadFile
       .finally ->
         Modal.hide()
 
@@ -104,7 +106,7 @@ module.exports = (client) ->
       .then (url) ->
         if url
           self.openFromURL url
-    
+
     searchImgur: ->
       Modal.prompt "Query", self.lastSearchQuery()
       .then (query) ->
@@ -115,33 +117,38 @@ module.exports = (client) ->
 
           imgur.search(query)
           .then (results) ->
+            Modal.hide()
             Modal.show SearchResultsTemplate results, ({cover, id}) ->
               self.openFromURL "https://i.imgur.com/#{cover or id}m.jpg"
 
-    open: (file) ->
-      palette = paletteView.palette()
-      colorStrings = paletteView.paletteStrings()
-  
+    loadFile: (file) ->
       Image.fromBlob(file)
-      .then (img) ->
-        {width, height} = img
-  
-        sourceCanvas.width = width
-        sourceCanvas.height = height
-  
-        destinationCanvas.width = width
-        destinationCanvas.height = height
-  
-        context = sourceCanvas.getContext('2d')
-        context.drawImage(img, 0, 0, width, height)
-  
-        data = context.getImageData(0, 0, width, height)
-        applyFilter(data, palette, colorStrings, destinationCanvas)
+      .then self.sourceImage
+
+  Observable ->
+    img = self.sourceImage()
+    return unless img
+
+    palette = paletteView.palette()
+    colorStrings = paletteView.paletteStrings()
+
+    {width, height} = img
+
+    sourceCanvas.width = width
+    sourceCanvas.height = height
+
+    destinationCanvas.width = width
+    destinationCanvas.height = height
+
+    context = sourceCanvas.getContext('2d')
+    context.drawImage(img, 0, 0, width, height)
+
+    data = context.getImageData(0, 0, width, height)
+    applyFilter(data, palette, colorStrings, destinationCanvas)
 
   menuBar = MenuBar
     items: parseMenu """
       [F]ile
-        [N]ew
         [O]pen
         Open [U]RL -> promptOpenURL
         [S]ave

@@ -22,7 +22,7 @@ Drop document, (e) ->
     e.preventDefault()
 
     file = files[0]
-    editor.open file
+    editor.loadFile file
 
 document.addEventListener "paste", (e) ->
   return if e.defaultPrevented
@@ -34,19 +34,47 @@ document.addEventListener "paste", (e) ->
   , null
 
   if file
-    editor.open(file)
+    editor.loadFile(file)
 
-postmaster.delegate =
-  # TODO: Should this be named `open`
-  # TODO: Should the editor be the delegate?
-  # Delegate object choice is app dependent
-  loadFile: (blob, path) ->
-    editor.open(blob)
+postmaster.delegate = editor
 
-console.log postmaster.delegate
+document.addEventListener "keydown", (e) ->
+  {ctrlKey:ctrl, key} = e
+  if ctrl
+    switch key
+      when "s"
+        e.preventDefault()
+        editor.save()
+      when "o"
+        e.preventDefault()
+        editor.open()
 
 system.ready()
-.catch console.warn
+.catch (e) ->
+  ReaderInput = require "./templates/reader-input"
+
+  # Override chooser to use local PC
+  editor.open = ->
+    Modal.show ReaderInput
+      accept: "image/*"
+      select: (file) ->
+        Modal.hide()
+        editor.loadFile file
+
+  # Override save to present download
+  editor.save = ->
+    Modal.prompt "File name", "newfile.txt"
+    .then (name) ->
+      editor.saveData()
+      .then (blob) ->
+        url = window.URL.createObjectURL(blob)
+        a = document.createElement("a")
+        a.href = url
+        a.download = name
+        a.click()
+        window.URL.revokeObjectURL(url)
+
+  console.warn e
 
 style = document.createElement "style"
 style.innerHTML = require "./style"
