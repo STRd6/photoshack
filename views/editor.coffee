@@ -14,6 +14,8 @@ module.exports = (client) ->
 
   imgur = Imgur "bb9bdf4c3e7140e"
 
+  filters = require("./filters")()
+
   sourceCanvas = document.createElement 'canvas'
   destinationCanvas = document.createElement 'canvas'
 
@@ -86,6 +88,11 @@ module.exports = (client) ->
       cancellable: false
 
   self = Object.assign FileIO(client),
+    sourceCanvas: sourceCanvas
+    destinationCanvas: destinationCanvas
+    paletteElement: paletteView.element
+    filtersElement: filters.element
+
     sourceImage: Observable null
     lastOpenURL: Observable ""
     lastSearchQuery: Observable "cat"
@@ -131,6 +138,9 @@ module.exports = (client) ->
 
     palette = paletteView.palette()
     colorStrings = paletteView.paletteStrings()
+    filter = filters.filter()
+
+    console.log filter
 
     {width, height} = img
 
@@ -141,6 +151,7 @@ module.exports = (client) ->
     destinationCanvas.height = height
 
     context = sourceCanvas.getContext('2d')
+    context.filter = filter
     context.drawImage(img, 0, 0, width, height)
 
     data = context.getImageData(0, 0, width, height)
@@ -174,13 +185,8 @@ module.exports = (client) ->
     """
     handlers: self
 
-  self.element = EditorTemplate
-    menuBarElement: menuBar.element
-    sourceCanvas: sourceCanvas
-    destinationCanvas: destinationCanvas
-    paletteElement: paletteView.element
-    filterElements: [
-      require("../templates/threshold")()
-    ]
+  self.menuBarElement = menuBar.element
+
+  self.element = EditorTemplate self
 
   return self

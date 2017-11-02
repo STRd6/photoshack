@@ -1,0 +1,25 @@
+section.filters
+  section
+    h2 Blur
+    input(type="range" min="0" max="10" step="0.1" value=@blur)
+  section
+    h2 Brightness
+    input(type="range" min="0" max="10" step="0.01" value=@brightness)
+  section
+    h2 Contrast
+    input(type="range" min="0" max="10" step="0.01" value=@contrast)
+  section
+    h2 Grayscale
+    input(type="range" min="0" max="1" step="0.01" value=@grayscale)
+  section
+    h2 Hue
+    input(type="range" min="0" max="360" value=@hue)
+  section
+    h2 Invert
+    input(type="range" min="0" max="1" step="0.01" value=@invert)
+  section
+    h2 Saturation
+    input(type="range" min="0" max="10" step="0.01" value=@saturation)
+  section
+    h2 Sepia
+    input(type="range" min="0" max="1" step="0.01" value=@sepia)
