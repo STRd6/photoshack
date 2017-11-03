@@ -1,0 +1,4 @@
+section
+  h2= @name
+  input(type="range" @min @max @step @value)
+  input(type="number" @min @max @step @value)

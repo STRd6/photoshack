@@ -1,18 +1,53 @@
-Template = require "../templates/filters"
+FilterSectionTemplate = require "../templates/filter-section"
 
 {Observable} = require "sys"
 
 module.exports = ->
-  self =
-    blur: Observable 0
-    brightness: Observable 1
-    contrast: Observable 1
-    grayscale: Observable 0
-    hue: Observable 0
-    invert: Observable 0
-    saturation: Observable 1
-    sepia: Observable 0
+  filterParams =
+    blur:
+      min: 0 
+      max: 10
+      step: 0.1
+      initial: 0
+    brightness:
+      min: 0
+      max: 10
+      step: 0.01
+      initial: 1
+    contrast:
+      min: 0
+      max: 10
+      step: 0.01
+      initial: 1
+    grayscale:
+      min: 0
+      max: 1
+      step: 0.01
+      initial: 0
+    hue:
+      min: 0
+      max: 360
+      step: 1
+      initial: 0
+    invert:
+      min: 0
+      max: 1
+      step: 0.01
+      initial: 0
+    saturation:
+      min: 0
+      max: 10
+      step: 0.01
+      initial: 1
+    sepia:
+      min: 0
+      max: 1
+      step: 0.01
+      initial: 0
 
+  filterNames = Object.keys(filterParams)
+
+  self =
     filter: ->
       """
         blur(#{self.blur()}px)
@@ -25,6 +60,15 @@ module.exports = ->
         sepia(#{self.sepia()})
       """
 
-  self.element = Template self
+  self.element = element = document.createElement "section"
+  element.classList.add "filters"
+
+  filterNames.forEach (name) ->
+    {initial} = param = filterParams[name]
+
+    param.name = name
+    self[name] = param.value = Observable initial
+
+    element.appendChild FilterSectionTemplate param
 
   return self

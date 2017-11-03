@@ -46,4 +46,13 @@ section.filters
       width: 100px
 
     > input
-      flex: 1
+      &[type="range"]
+        flex: 1
+
+      &[type="number"]
+        text-align: right
+        width: 60px
+
+input::-webkit-outer-spin-button, 
+input::-webkit-inner-spin-button
+  margin-left: 0.5em
