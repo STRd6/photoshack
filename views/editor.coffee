@@ -102,7 +102,7 @@ module.exports = (client) ->
       showLoader()
 
       fetch(url)
-      .then (response) -> 
+      .then (response) ->
         response.blob()
       .then self.loadFile
       .finally ->
@@ -132,6 +132,32 @@ module.exports = (client) ->
       Image.fromBlob(file)
       .then self.sourceImage
 
+  applyDream = (destinationCanvas) ->
+    {width, height} = destinationCanvas
+    context = destinationCanvas.getContext("2d")
+
+    gradient = context.createLinearGradient(0, 0, 0, height)
+    i = 0
+    while i <= 6
+      gradient.addColorStop(i/6, "hsl(#{i * 60}, 100%, 50%)")
+      i += 1
+
+    context.globalCompositeOperation = "screen"
+    context.fillStyle = gradient
+    context.fillRect(0, 0, width, height)
+
+    context.fillStyle = "white"
+
+    i = 0
+    while i < width
+      context.fillRect(i, 0, 1, height)
+      i += 4
+
+    i = 0
+    while i < height
+      context.fillRect(0, i, width, 1)
+      i += 4
+
   Observable ->
     img = self.sourceImage()
     return unless img
@@ -156,6 +182,7 @@ module.exports = (client) ->
 
     data = context.getImageData(0, 0, width, height)
     applyFilter(data, palette, colorStrings, destinationCanvas)
+    applyDream(destinationCanvas)
 
   menuBar = MenuBar
     items: parseMenu """
