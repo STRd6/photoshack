@@ -182,6 +182,8 @@ module.exports = (client) ->
 
     data = context.getImageData(0, 0, width, height)
     applyFilter(data, palette, colorStrings, destinationCanvas)
+
+    # destinationCanvas.getContext('2d').drawImage(sourceCanvas, 0, 0, width, height)
     applyDream(destinationCanvas)
 
   menuBar = MenuBar
