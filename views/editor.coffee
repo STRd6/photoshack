@@ -102,7 +102,7 @@ module.exports = (client) ->
       showLoader()
 
       fetch(url)
-      .then (response) -> 
+      .then (response) ->
         response.blob()
       .then self.loadFile
       .finally ->
@@ -140,8 +140,6 @@ module.exports = (client) ->
     colorStrings = paletteView.paletteStrings()
     filter = filters.filter()
 
-    console.log filter
-
     {width, height} = img
 
     sourceCanvas.width = width
@@ -154,8 +152,8 @@ module.exports = (client) ->
     context.filter = filter
     context.drawImage(img, 0, 0, width, height)
 
-    data = context.getImageData(0, 0, width, height)
-    applyFilter(data, palette, colorStrings, destinationCanvas)
+    # data = context.getImageData(0, 0, width, height)
+    # applyFilter(data, palette, colorStrings, destinationCanvas)
 
   menuBar = MenuBar
     items: parseMenu """

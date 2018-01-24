@@ -1,3 +1,4 @@
+FiltersTemplate = require "../templates/filters"
 FilterSectionTemplate = require "../templates/filter-section"
 
 {Observable} = require "sys"
@@ -5,7 +6,7 @@ FilterSectionTemplate = require "../templates/filter-section"
 module.exports = ->
   filterParams =
     blur:
-      min: 0 
+      min: 0
       max: 10
       step: 0.1
       initial: 0
@@ -59,9 +60,18 @@ module.exports = ->
         saturate(#{self.saturation()})
         sepia(#{self.sepia()})
       """
+    toJSON: ->
+      Object.keys(filterParams).reduce (data, key) ->
+        data[key] = self[key]()
 
-  self.element = element = document.createElement "section"
-  element.classList.add "filters"
+        return data
+      , {}
+    persist: ->
+      console.log self.toJSON()
+
+    filterElements: ->
+      filterNames.map (name) ->
+        FilterSectionTemplate filterParams[name]
 
   filterNames.forEach (name) ->
     {initial} = param = filterParams[name]
@@ -69,6 +79,7 @@ module.exports = ->
     param.name = name
     self[name] = param.value = Observable initial
 
-    element.appendChild FilterSectionTemplate param
+
+  self.element = FiltersTemplate self
 
   return self

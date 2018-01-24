@@ -1,0 +1,5 @@
+section.filters
+  actions
+    button(click=@persist) Save Filters
+    button(click=@restore) Restore Filters
+  = @filterElements
