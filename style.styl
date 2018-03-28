@@ -26,17 +26,25 @@ colors > color
   height: 16px
   width: 16px
 
+editor
+  display: flex
+  flex: 1
+
+  > img, > canvas
+    justify-self: center
+    margin: auto
+
 #modal
   > input[type=file]
     padding: 2em
 
-section.filters 
+section.filters
   padding-right: 1em
   max-width: 400px
 
   > section
     display: flex
-    
+
     > h2
       align-self: center
       display: inline-block
@@ -53,6 +61,6 @@ section.filters
         text-align: right
         width: 60px
 
-input::-webkit-outer-spin-button, 
+input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button
   margin-left: 0.5em

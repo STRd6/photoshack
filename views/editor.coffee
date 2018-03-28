@@ -183,7 +183,7 @@ module.exports = (client) ->
     """
     handlers: self
 
-  self.menuBarElement = menuBar.element
+  document.body.appendChild menuBar.element
 
   self.element = EditorTemplate self
 
