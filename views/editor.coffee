@@ -12,7 +12,6 @@ module.exports = (client) ->
 
   filters = require("./filters")()
 
-
   showLoader = ->
     progressView = Progress
       message: "Loading..."
@@ -67,6 +66,9 @@ module.exports = (client) ->
     return unless img
 
     filter = filters.filter()
+
+    console.log filter
+    
     img.style.filter = filter
 
   menuBar = MenuBar
@@ -87,9 +89,6 @@ module.exports = (client) ->
         Cu[t]
         [C]opy
         De[l]ete
-        -
-        Select [A]ll
-        Time/[D]ate
       Search
         Imgr -> searchImgur
       [H]elp

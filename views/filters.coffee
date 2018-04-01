@@ -71,14 +71,16 @@ module.exports = ->
 
     filterElements: ->
       filterNames.map (name) ->
-        FilterSectionTemplate filterParams[name]
+        params = filterParams[name]
+        console.log name, params
+
+        FilterSectionTemplate params
 
   filterNames.forEach (name) ->
     {initial} = param = filterParams[name]
 
     param.name = name
     self[name] = param.value = Observable initial
-
 
   self.element = FiltersTemplate self
 
