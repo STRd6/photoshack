@@ -21,8 +21,6 @@ module.exports = (client) ->
       cancellable: false
 
   self = Object.assign FileIO(client),
-    sourceCanvas: sourceCanvas
-    destinationCanvas: destinationCanvas
     filtersElement: filters.element
 
     sourceImage: Observable null
@@ -68,17 +66,8 @@ module.exports = (client) ->
     img = self.sourceImage()
     return unless img
 
-    palette = paletteView.palette()
-    colorStrings = paletteView.paletteStrings()
     filter = filters.filter()
-
-    {width, height} = img
-
-    sourceCanvas.width = width
-    sourceCanvas.height = height
-
-    destinationCanvas.width = width
-    destinationCanvas.height = height
+    img.style.filter = filter
 
   menuBar = MenuBar
     items: parseMenu """
@@ -107,6 +96,8 @@ module.exports = (client) ->
         [A]bout Photoshack
     """
     handlers: self
+  
+  self.sourceCanvas = self.sourceImage
 
   document.body.appendChild menuBar.element
 
