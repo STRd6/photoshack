@@ -7,6 +7,7 @@ module.exports = (client) ->
   {MenuBar, Modal, Progress, Util:{parseMenu}} = UI
 
   EditorTemplate = require "../templates/editor"
+  FilterViewElementTemplate = require "../templates/filter-view"
 
   imgur = Imgur "bb9bdf4c3e7140e"
 
@@ -20,7 +21,15 @@ module.exports = (client) ->
       cancellable: false
 
   self = Object.assign FileIO(client),
+    backgroundStyle: ->
+      background: "rgba(125, 105, 24, .1)"
+      mixBlendMode: "multiply"
+
+    filterStyle: ->
+      filter: filters.filter()
+
     filtersElement: filters.element
+    filterViewElement: null
 
     sourceImage: Observable null
     lastOpenURL: Observable ""
@@ -61,16 +70,6 @@ module.exports = (client) ->
       Image.fromBlob(file)
       .then self.sourceImage
 
-  Observable ->
-    img = self.sourceImage()
-    return unless img
-
-    filter = filters.filter()
-
-    console.log filter
-    
-    img.style.filter = filter
-
   menuBar = MenuBar
     items: parseMenu """
       [F]ile
@@ -95,10 +94,10 @@ module.exports = (client) ->
         [A]bout Photoshack
     """
     handlers: self
-  
-  self.sourceCanvas = self.sourceImage
 
   document.body.appendChild menuBar.element
+
+  self.filterViewElement = filterViewElement = FilterViewElementTemplate self
 
   self.element = EditorTemplate self
 

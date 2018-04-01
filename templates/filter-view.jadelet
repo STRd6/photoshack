@@ -1,0 +1,3 @@
+filter-view(style=@filterStyle)
+  background(style=@backgroundStyle)
+  = @sourceImage

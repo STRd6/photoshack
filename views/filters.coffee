@@ -72,9 +72,10 @@ module.exports = ->
     filterElements: ->
       filterNames.map (name) ->
         params = filterParams[name]
-        console.log name, params
 
-        FilterSectionTemplate params
+        element = FilterSectionTemplate params
+
+        return element
 
   filterNames.forEach (name) ->
     {initial} = param = filterParams[name]

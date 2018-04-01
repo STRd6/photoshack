@@ -30,9 +30,22 @@ editor
   display: flex
   flex: 1
 
-  > img, > canvas
+  > filter-view
+    display: block
     justify-self: center
     margin: auto
+    position: relative
+
+    > background
+      display: block
+      height: 100%
+      left: 0
+      position: absolute
+      top: 0
+      width: 100%
+
+    > img
+      display: block
 
 #modal
   > input[type=file]
