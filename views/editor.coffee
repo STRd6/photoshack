@@ -1,5 +1,7 @@
 Imgur = require "../lib/imgr"
 
+InstagramFilters = require "./instagram-filters"
+
 SearchResultsTemplate = require "../templates/search-results"
 
 module.exports = (client) ->
@@ -11,8 +13,6 @@ module.exports = (client) ->
 
   imgur = Imgur "bb9bdf4c3e7140e"
 
-  filters = require("./filters")()
-
   showLoader = ->
     progressView = Progress
       message: "Loading..."
@@ -20,16 +20,17 @@ module.exports = (client) ->
     Modal.show progressView.element,
       cancellable: false
 
+  filterSelect = InstagramFilters()
+
   self = Object.assign FileIO(client),
     backgroundStyle: ->
-      background: "rgba(125, 105, 24, .1)"
-      mixBlendMode: "multiply"
+      filterSelect.backgroundCSS()
 
     filterStyle: ->
-      filter: filters.filter()
+      filterSelect.filterCSS()
 
-    filtersElement: filters.element
     filterViewElement: null
+    filterSelectElement: filterSelect.element
 
     sourceImage: Observable null
     lastOpenURL: Observable ""
@@ -97,7 +98,7 @@ module.exports = (client) ->
 
   document.body.appendChild menuBar.element
 
-  self.filterViewElement = filterViewElement = FilterViewElementTemplate self
+  self.filterViewElement = FilterViewElementTemplate self
 
   self.element = EditorTemplate self
 
