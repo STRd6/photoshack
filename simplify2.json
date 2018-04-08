@@ -8,7 +8,7 @@
     },
     "TODO.md": {
       "path": "TODO.md",
-      "content": "TODO\n====\n\n- [ ] Use img and css filters instead of canvas filter\n- [ ] Implement Instagram CSS Filters https://picturepan2.github.io/instagram.css/\n  - [ ] Handle background/blend mode\n  - [ ] Handle varying filter attribute orders\n- [ ] Filter selection dropdown\n- [ ] Use webcam for image source\n- [ ] Save and load filter presets\n",
+      "content": "TODO\n====\n\n- [X] Use img and css filters instead of canvas filter\n- [X] Implement Instagram CSS Filters https://picturepan2.github.io/instagram.css/\n  - [X] Handle background/blend mode\n  - [X] Handle varying filter attribute orders\n- [X] Filter selection dropdown\n- [X] Use webcam for image source\n\nUI\n---\n- [ ] Scale image correctly, prevent overflow\n- [ ] Scrollable Captures section\n- [ ] Apply filters in capture section\n- [ ] Download / Save image in captures section\n\nBonus\n-----\n\n- [ ] Stickers\n- [ ] Borders\n",
       "mode": "100644",
       "type": "blob"
     },
