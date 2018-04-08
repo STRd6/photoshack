@@ -30,27 +30,44 @@ editor
   display: flex
   flex: 1
   flex-direction: column
-  justify-content: center
-  margin: auto
 
   > button
+    flex: 0
     font-size: 32px
     margin: 1em auto
 
-  > filter-view
-    display: block
-    position: relative
+  > section.filter
+    display: flex
+    flex-direction: column
+    margin: auto
 
-    > background
+    > filter-view
       display: block
-      height: 100%
-      left: 0
-      position: absolute
-      top: 0
-      width: 100%
+      position: relative
+  
+      > background
+        display: block
+        height: 100%
+        left: 0
+        position: absolute
+        top: 0
+        width: 100%
+  
+      > img, > video
+        display: block
 
-    > img, > video
-      display: block
+  > section.captures
+    background-color: #EEE
+    display: flex
+    height: 64px
+    margin-top: auto
+
+    > *
+      margin-right: 1em
+      max-height: 64px
+
+      &:last-child
+        margin-right: 0
 
 #modal
   > input[type=file]

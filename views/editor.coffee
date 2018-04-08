@@ -51,6 +51,7 @@ module.exports = (client) ->
       videoElement = document.createElement 'video'
 
       navigator.getUserMedia
+        audio: false
         video: true
       , (stream) ->
         videoElement.src = URL.createObjectURL(stream)
@@ -58,6 +59,19 @@ module.exports = (client) ->
         throw e
 
       self.sourceImage videoElement
+
+    snapshot: (videoElement) ->
+      canvas = document.createElement 'canvas'
+      canvas.width = videoElement.width
+      canvas.height = videoElement.height
+      context = canvas.getContext('2d')
+      context.drawImage(videoElement, 0,0, canvas.width, canvas.height)
+
+      return canvas
+
+    capture: ->
+      # TODO: Apply filter
+      capturesElement.appendChild self.snapshot(self.sourceImage())
 
     promptOpenURL: ->
       Modal.prompt "URL", self.lastOpenURL()
@@ -113,5 +127,7 @@ module.exports = (client) ->
   self.filterViewElement = FilterViewElementTemplate self
 
   self.element = EditorTemplate self
+  
+  capturesElement = self.element.querySelector('section.captures')
 
   return self

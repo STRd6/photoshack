@@ -1,4 +1,4 @@
 editor
   = @filterViewElement
-  = @filterSelectElement
   button(click=@openWebcam) 🎥
+  section.captures

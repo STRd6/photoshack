@@ -1,3 +1,5 @@
-filter-view(style=@filterStyle)
-  background(style=@backgroundStyle)
-  = @sourceImage
+section.filter
+  filter-view(style=@filterStyle click=@capture)
+    background(style=@backgroundStyle)
+    = @sourceImage
+  = @filterSelectElement
