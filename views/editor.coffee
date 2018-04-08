@@ -54,6 +54,10 @@ module.exports = (client) ->
         audio: false
         video: true
       , (stream) ->
+        videoElement.oncanplay = ->
+          videoElement.play()
+          videoElement.width = videoElement.videoWidth
+          videoElement.height = videoElement.videoHeight
         videoElement.src = URL.createObjectURL(stream)
       , (e) ->
         throw e
