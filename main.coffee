@@ -12,6 +12,7 @@ global.editor = editor = Editor(client)
 document.body.appendChild editor.element
 
 editor.openFromURL("https://picturepan2.github.io/instagram.css/assets/img/instagram.jpg")
+# editor.openWebcam()
 
 Drop document, (e) ->
   return if e.defaultPrevented

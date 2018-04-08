@@ -47,6 +47,18 @@ module.exports = (client) ->
       .finally ->
         Modal.hide()
 
+    openWebcam: ->
+      videoElement = document.createElement 'video'
+
+      navigator.getUserMedia
+        video: true
+      , (stream) ->
+        videoElement.src = URL.createObjectURL(stream)
+      , (e) ->
+        throw e
+
+      self.sourceImage videoElement
+
     promptOpenURL: ->
       Modal.prompt "URL", self.lastOpenURL()
       .then (url) ->
