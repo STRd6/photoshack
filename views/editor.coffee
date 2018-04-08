@@ -49,6 +49,7 @@ module.exports = (client) ->
 
     openWebcam: ->
       videoElement = document.createElement 'video'
+      videoElement.style.transform = "scaleX(-1)"
 
       navigator.getUserMedia
         audio: false
